@@ -22,12 +22,10 @@ class AirMonitor:
         if isinstance(ppm, bool) or not isinstance(ppm, (int, float)) or not isfinite(ppm) or ppm < 0:
             raise ValueError("ppm must be finite and nonnegative")
         previous = self.level
-        if ppm >= self.critical:
+        if ppm >= self.critical or (previous == "critical" and ppm >= self.critical - self.clear_margin):
             self.level = "critical"
         elif ppm >= self.warning:
             self.level = "warning"
-        elif previous == "critical" and ppm >= self.critical - self.clear_margin:
-            self.level = "critical"
         elif previous in ("warning", "critical") and ppm >= self.warning - self.clear_margin:
             self.level = "warning"
         else:
